@@ -1,2 +1,4 @@
 serial
 PiCamera
+vertx
+ConfigParser

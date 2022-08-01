@@ -1,27 +1,17 @@
-import threading
-from queue import Queue
 import time
 
-from picamera import PiCamera
-from time import sleep
-
 class Actuator:
-    def __int__(self):
-        print("creating items...")
+    def __init__(self, eventBus):
+        print("creating actuator...")
         self.devices = {}
-
+        self.eventBus = eventBus
 
     def __processor(self):
         print()
 
-
     def __processAction(self, device, item):
         print("process", device, item)
-        if item == 'BUTTONOFF':
-            camera = PiCamera()
-            camera.start_recording('recorded.h264')
-            time.sleep(10)
-            camera.stop_recording()
+        self.eventBus.send("event", body={'source': 'python', 'action': '_EVENT_', 'bean': { 'name':'door', 'status': item }})
         print("processed", device, item)
 
 
@@ -51,3 +41,5 @@ class Actuator:
             }
 
             self.__processAction(device, action)
+        else:
+            print("rejecting event:", action)

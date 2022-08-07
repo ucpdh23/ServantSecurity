@@ -1,8 +1,9 @@
 import time
+import logging
 
 class Actuator:
     def __init__(self, eventBus):
-        print("creating actuator...")
+        logging.info("creating actuator...")
         self.devices = {}
         self.eventBus = eventBus
 
@@ -10,12 +11,13 @@ class Actuator:
         print()
 
     def __processAction(self, device, item):
-        print("process", device, item)
+        logging.info("sending into the bus: %s %s", device, item)
         self.eventBus.send("event", body={'source': 'python', 'action': '_EVENT_', 'bean': { 'name':'door', 'status': item }})
-        print("processed", device, item)
+        logging.info("sent into the bus: %s %s", device, item)
 
 
     def addItem(self, device, action):
+        logging.info("AddItem...")
         if device not in self.devices:
             ts = time.time()
             event = {
@@ -26,9 +28,9 @@ class Actuator:
         else:
             event = self.devices[device]
 
-        print("time", time.time())
+        logging.info("time: %s", time.time())
         if event['action'] != action or event['lastEvent'] < time.time() - 60:
-            print('event.action', event['action'])
+            logging.info('event.action: %s', event['action'])
             if event['action'] == action:
                 first_ts = event['firstEvent']
             else:
@@ -42,4 +44,4 @@ class Actuator:
 
             self.__processAction(device, action)
         else:
-            print("rejecting event:", action)
+            logging.info("rejecting event: %s", action)
